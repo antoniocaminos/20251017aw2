@@ -1,0 +1,18 @@
+{
+  "name": "20250926aw2",
+  "version": "1.0.0",
+  "description": "routes con persistencia de datos",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "author": "tony",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.18",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
