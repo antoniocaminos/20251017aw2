@@ -13,7 +13,7 @@ app.use(express.json());                       // parsear JSON en body
 
 /* zona de data */
 // leer archivo JSON (usa top-level await; asegúrate de Node con type: 'module')
-const data = await readFile('./data/pesonajes.json', 'utf-8');
+const data = await readFile('./data/personajes.json', 'utf-8');
 const characters = JSON.parse(data);           // array de personajes
 
 /* zona de rutas methods GET */
@@ -69,7 +69,7 @@ app.put('/personajes', async (req, res) => {
     const index = characters.findIndex(p => p.id === idNum);
     if (index !== -1) {
       characters[index] = { id: idNum, nombre, edad, genero, raza, clase }; // reemplazo
-      await writeFile('./data/pesonajes.json', JSON.stringify(characters, null, 2)); // persistir
+      await writeFile('./data/personajes.json', JSON.stringify(characters, null, 2)); // persistir
       return res.status(200).json({ message: 'Personaje actualizado', personaje: characters[index] }); // 200 OK
     } else {
       return res.status(404).json({ error: 'Personaje no encontrado' }); // 404 Not Found
@@ -90,7 +90,7 @@ app.delete('/personajes/:id', async (req, res) => {
     const index = characters.findIndex(p => p.id === id);
     if (index !== -1) {
       characters.splice(index, 1);
-      await writeFile('./data/pesonajes.json', JSON.stringify(characters, null, 2)); // persistir
+      await writeFile('./data/personajes.json', JSON.stringify(characters, null, 2)); // persistir
       return res.status(200).json({ message: 'Personaje eliminado con éxito' }); // 200 OK
     } else {
       return res.status(404).json({ error: 'Personaje no encontrado' }); // 404 Not Found
@@ -100,6 +100,56 @@ app.delete('/personajes/:id', async (req, res) => {
   }
 });
 
+// POST -> crear un nuevo personaje
+app.post('/personajes', async (req, res) => {
+  try {
+    const { id, nombre, edad, genero, raza, clase } = req.body;
+
+    // Validar que venga un id válido
+    const idNum = parseInt(id, 10);
+    if (Number.isNaN(idNum)) {
+      return res.status(400).json({ error: 'El id debe ser un número' }); // 400 Bad Request
+    }
+
+    // Validar que no exista ya un personaje con ese id
+    const existe = characters.some(p => p.id === idNum);
+    if (existe) {
+      return res.status(409).json({ error: 'Ya existe un personaje con ese id' }); // 409 Conflict
+    }
+
+    // Validar campos obligatorios
+    if (!nombre || !edad || !genero || !raza || !clase) {
+      return res.status(400).json({ error: 'Faltan datos obligatorios' }); // 400 Bad Request
+    }
+
+    // Crear nuevo personaje
+    const nuevoPersonaje = { id: idNum, nombre, edad, genero, raza, clase };
+    characters.push(nuevoPersonaje);
+
+    // Guardar en el archivo
+    await writeFile('./data/personajes.json', JSON.stringify(characters, null, 2));
+
+    // Responder al cliente
+    return res.status(201).json({ 
+      message: '🎉 Personaje creado con éxito', 
+      personaje: nuevoPersonaje 
+    }); // 201 Created
+  } catch (error) {
+    return res.status(500).json({ error: 'Error al crear personaje', detalle: error.message });
+  }
+  /* ---------------- 
+  {
+  "id": ,
+  "nombre": "",
+  "edad": ,
+  "genero": "",
+  "raza": "",
+  "clase": ""
+  }
+  ------------------  */
+
+});
+/* fin post */
 /* zona de ejecucion */
 app.listen(PORT, () => {
   console.log('=============================');

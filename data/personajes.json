@@ -1,5 +1,5 @@
 [
-   {
+  {
     "id": 1,
     "nombre": "Homer Simpson",
     "edad": 39,
@@ -248,5 +248,13 @@
     "vivo": false,
     "img": "https://static.simpsonswiki.com/images/c/c0/OttoMann.png",
     "frase": "¡Rock and roll!"
+  },
+  {
+    "id": 8888888,
+    "nombre": "tony",
+    "edad": 44,
+    "genero": "varon",
+    "raza": "latino",
+    "clase": "profe"
   }
 ]
