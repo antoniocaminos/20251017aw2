@@ -256,5 +256,13 @@
     "genero": "varon",
     "raza": "latino",
     "clase": "profe"
+  },
+  {
+    "id": 5555,
+    "nombre": "Trinity",
+    "edad": 8,
+    "genero": "niña",
+    "raza": "latina",
+    "clase": "estudiante ejemplar"
   }
 ]
