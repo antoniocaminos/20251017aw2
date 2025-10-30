@@ -1,5 +1,9 @@
+import { error } from "console";
 import { Router } from "express";
 import { readFile,  writeFile } from 'fs/promises';
+import { formatearPersonaje, mensajeError } from "../utils/personajesFormateado.js";
+
+
 
 const router = Router();
 
@@ -34,7 +38,7 @@ router.get('/personajes/ordenados', (req, res) => {
 
 // GET -> obtener personaje por ID (usa parseInt + ===)
 router.get('/personajes/:id', (req, res) => {
-  try {
+  /* try {
     const id = parseInt(req.params.id, 10);   // convertir string a número
     if (Number.isNaN(id)) {                    
       return res.status(400).json({ error: 'El id debe ser un número entero' }); // 400 Bad Request
@@ -46,10 +50,32 @@ router.get('/personajes/:id', (req, res) => {
       return res.status(404).json({ error: 'Personaje no encontrado' }); // 404 Not Found
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al buscar personaje', detalle: error.message });
+    res.status(500).json({ error: 'Error al buscar personaje', detalle: error.message }); */
+    try {
+      const id = parseInt(req.params.id, 10);   // convertir string a número
+      if (Number.isNaN(id)){
+        return res.status(400).json({
+          error: 'El id debe ser un número entero#️⃣',
+        });
+      }
+    const personaje = characters.find(p=> p.id === id);//estrictamente igual y equivalente
+    if (personaje) {
+      const personajeFormateado = formatearPersonaje(personaje);
+      return res.status(200).json({
+        success: true,
+        mensaje: 'Personaje encontrado 👌',
+        data: personajeFormateado,
+      });
+    } else {
+      return res.status(404).json(mensajeError(id)); // 404 Not Found
+    }
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Error al buscar personaje 💣💣',
+      detalle:error.message,
+    });
   }
 });
-
 /* zona de rutas methods PUT */
 // PUT -> actualizar personaje (reemplazo completo) 
 router.put('/personajes', async (req, res) => {
